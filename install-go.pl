@@ -48,9 +48,21 @@ defined glob("$DESTDIR/go/*")
 
 $DESTDIR = File::Spec::->rel2abs($DESTDIR);
 
-my($ARCH, $EXT) = ('amd64', 'tar.gz');
+my($EXT) = ('tar.gz');
+my $ARCH;
 my $OS;
-if ($^O eq 'linux' or $^O eq 'freebsd' or $^O eq 'darwin') { $OS = $^O }
+if ($^O eq 'linux' or $^O eq 'freebsd' or $^O eq 'darwin')
+{ 
+    $OS = $^O;
+    if ($ENV{TARGET_ARCH})
+    {
+        $ARCH = $ENV{TARGET_ARCH};
+    }
+    else
+    {
+        $ARCH = "amd64";
+    }
+}
 elsif ($^O eq 'msys')
 {
     $OS = 'windows';
@@ -426,3 +438,4 @@ sub http_head
 
     return HTTP::Tiny::->new->head($url);
 }
+
